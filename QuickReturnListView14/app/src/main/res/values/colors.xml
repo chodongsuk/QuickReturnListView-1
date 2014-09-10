@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="quick_return_bg">#80DEEA</color>
+    <color name="quick_return_text">#006064</color>
+
+    <color name="light_purple">#E1BEE7</color>
+
+    <color name="light_gray">#CCCCCC</color>
+</resources>
