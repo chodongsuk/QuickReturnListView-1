@@ -24,7 +24,7 @@ Tested on 4.1.2, 4.4.4.
 QuickReturnListView requires exactly 1 Quick return view and 1 AbsListView as its children.
 Quick return view can be any types of view.
 
-sample.xml
+quick_return_list.xml
 ```
 <com.emmasuzuki.quickreturnlistview.view.QuickReturnListView
     xmlns:android="http://schemas.android.com/apk/res/android"
