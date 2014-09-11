@@ -5,7 +5,6 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="@string/quick_return"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/quick_return_bg"
@@ -13,7 +12,8 @@
         android:paddingBottom="18dp"
         android:gravity="center"
         android:textColor="@color/quick_return_text"
-        android:textSize="26sp"/>
+        android:textSize="26sp"
+        android:text="@string/quick_return"/>
 
     <ListView
         android:id="@android:id/list"
