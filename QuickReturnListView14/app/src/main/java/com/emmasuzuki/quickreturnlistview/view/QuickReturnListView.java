@@ -32,10 +32,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.view.animation.Animation;
-import android.view.animation.TranslateAnimation;
 import android.widget.AbsListView;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ListAdapter;
 
@@ -161,36 +158,42 @@ public class QuickReturnListView extends FrameLayout {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         // If items are all visible or first item is visible, do nothing for quick return view
-        if (mAllItemsVisible || !mQuickReturnEnabled || isFirstItemVisible()) {
+        if (mAllItemsVisible || !mQuickReturnEnabled) {
             return super.dispatchTouchEvent(ev);
         }
 
         mGestureListener.onTouchEvent(ev);
 
-        switch (ev.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                mSettleEnabled = false;
-                mPrevY = (int) ev.getY();
+        if (mAbsListView.getFirstVisiblePosition() == 0) {
+            mState = STATE_ONSCREEN;
+            mQuickReturnView.animate().translationY(0).setDuration(mSettleAnimationDuration);
 
-                break;
+        } else {
+            switch (ev.getActionMasked()) {
+                case MotionEvent.ACTION_DOWN:
+                    mSettleEnabled = false;
+                    mPrevY = (int) ev.getY();
 
-            case MotionEvent.ACTION_UP:
-            case MotionEvent.ACTION_CANCEL:
-                // Settle quick return view with animation
-                mSettleEnabled = true;
-                mScrollSettleHandler.onScroll();
+                    break;
 
-                break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    // Settle quick return view with animation
+                    mSettleEnabled = true;
+                    mScrollSettleHandler.onScroll();
 
-            case MotionEvent.ACTION_MOVE:
-                // Move quick return view according to touch move
-                mDeltaY = (int) ev.getY() - mPrevY;
+                    break;
 
-                handleMove();
+                case MotionEvent.ACTION_MOVE:
+                    // Move quick return view according to touch move
+                    mDeltaY = (int) ev.getY() - mPrevY;
 
-                mPrevY = (int) ev.getY();
+                    handleMove();
 
-                break;
+                    mPrevY = (int) ev.getY();
+
+                    break;
+            }
         }
 
         return super.dispatchTouchEvent(ev);
@@ -231,7 +234,7 @@ public class QuickReturnListView extends FrameLayout {
             @Override
             public void onHandleMessage() {
                 // If first item is visible, do nothing
-                if (mSettleEnabled && mState == STATE_RETURNING && !isFirstItemVisible()) {
+                if (mSettleEnabled && mState == STATE_RETURNING) {
                     final int destY;
 
                     // If more than half of quick return view is on screen, settle to show completely
@@ -340,10 +343,6 @@ public class QuickReturnListView extends FrameLayout {
             // True if list items are all visible
             mAllItemsVisible = mAbsListView.getLastVisiblePosition() >= mAbsListView.getAdapter().getCount() - 1;
         }
-    }
-
-    private boolean isFirstItemVisible() {
-        return mAbsListView.getFirstVisiblePosition() < 1;
     }
 
     /**
